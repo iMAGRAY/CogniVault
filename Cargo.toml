@@ -1,0 +1,66 @@
+[package]
+name = "cognivault"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+async-trait = "0.1"
+futures = "0.3"
+dashmap = "5"
+anyhow = "1"
+serde = { version = "1", features = ["derive"], optional = false }
+serde_json = "1"
+sled = { version = "0.34", optional = true }
+aes-gcm-siv = { version = "0.11", optional = true, default-features = false, features = ["aes", "alloc"] }
+
+opa-wasm = { version = "0.1.5", optional = true }
+
+# plugin and system optional deps
+async-std = { version = "1.12", optional = true, features = ["attributes"] }
+tokio = { version = "1", optional = true, features = ["rt-multi-thread", "macros"] }
+
+# Add new feature groups
+libloading = { version = "0.8", optional = true }
+wasmtime = { version = "17", optional = true, default-features = false, features = ["async"] }
+rlimit = { version = "0.10", optional = true }
+# conditional dependency on windows for JobObject (use windows crate)
+windows = { version = "0.53", optional = true, features = ["Win32_System_JobObjects"] }
+
+sha2 = { version = "0.10", optional = true }
+hex = { version = "0.4", optional = true }
+ordered-float = { version = "3.7", optional = true }
+async-lock = "3"
+
+metrics = { version = "0.22", optional = true }
+metrics-exporter-prometheus = { version = "0.12", optional = true }
+
+# ANN optional crates
+hnsw = { version = "0.9", optional = true }
+instant-distance = { version = "0.6", optional = true }
+
+ed25519-dalek = { version = "1.0", features = ["std"], optional = true }
+
+[features]
+# choose one runtime at compile time
+runtime_async_std = ["async-std"]
+runtime_tokio = ["tokio"]
+# default runtime
+default = ["runtime_async_std"]
+
+plugin_cdylib = ["libloading"]
+plugin_wasi   = ["wasmtime"]
+limit_guard_unix = ["rlimit"]
+limit_guard_windows = ["windows"]
+opa_policy = ["opa-wasm"]
+longmem_sled = ["sled"]
+longmem_encrypt = ["aes-gcm-siv"]
+detailmem_fs = ["sha2", "hex"]
+dev_metrics = ["metrics", "metrics-exporter-prometheus"]
+ann_hnsw = ["hnsw"]
+ann_scalar = ["instant-distance"]
+
+plugin_verify = ["ed25519-dalek"]
+
+# features list add
+merkle_log = []
+snap_par2 = []
